@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarGaugesApi", "CarGaugesApi\CarGaugesApi.csproj", "{7DF8A42E-E7E6-4A79-9914-D023CA060F0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarGaugesApiTests", "CarGaugesApiTests\CarGaugesApiTests.csproj", "{302D5F8C-527C-4E0D-A7EA-A3A486618039}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7DF8A42E-E7E6-4A79-9914-D023CA060F0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DF8A42E-E7E6-4A79-9914-D023CA060F0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DF8A42E-E7E6-4A79-9914-D023CA060F0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DF8A42E-E7E6-4A79-9914-D023CA060F0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{302D5F8C-527C-4E0D-A7EA-A3A486618039}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{302D5F8C-527C-4E0D-A7EA-A3A486618039}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{302D5F8C-527C-4E0D-A7EA-A3A486618039}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{302D5F8C-527C-4E0D-A7EA-A3A486618039}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

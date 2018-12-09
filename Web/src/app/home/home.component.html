@@ -1,0 +1,18 @@
+﻿<h1>Home</h1>
+<div>
+    You're logged in with user from secure api end point:
+    <ul>
+        <li >{{user.username}} {{user.description}}</li>
+    </ul>
+</div>
+<div class="btn-toolbar">
+	<button [routerLink]="['/user-create']" class="btn btn-primary mr-2">Create</button>
+	<button (click)="deleteUser()" class="btn btn-primary mr-2">Delete</button>
+	<button [routerLink]="['/login']" class="btn btn-primary mr-2">Logout</button>
+</div>
+<div>
+    Users registered in this API:
+    <ul>
+        <li *ngFor="let user of users; index as i">{{user.username}} {{user.description}} <button (click)="updateUser(i)" class="btn btn-primary mb-2">Update</button></li>
+    </ul>
+</div>
