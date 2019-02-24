@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System;
+using CarGaugesApi.Constants;
 
 namespace CarGaugesApi.Controllers
 {
@@ -14,34 +16,41 @@ namespace CarGaugesApi.Controllers
     public class UsersController : Controller
     {
         public readonly IUsersService _usersService;
+        public IHttpContextAccessor _httpContextAccessor;
 
-        public UsersController(IUsersService usersService)
+        public UsersController(IUsersService usersService, IHttpContextAccessor httpContextAccessor)
         {
             _usersService = usersService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody]User userParam)
         {
-            var user = _usersService.Authenticate(userParam.Username, userParam.Password);
+            if (double.Parse(_httpContextAccessor.HttpContext.Request.Headers["AppVersion"]) == AppVersions.APP_VERSION_APPLE)
+            {
+                var user = _usersService.Authenticate(userParam.Username, userParam.Password);
 
-            if (user == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
+                if (user == null)
+                    return BadRequest(new { message = "Username or password is incorrect" });
 
-            return Ok(user);
+                return Ok(user);
+            }
+
+            return BadRequest();
         }
 
         // GET api/users/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser(int id)
+        public IActionResult GetUser(int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var user = await _usersService.GetUser(id);
+            var user = _usersService.GetUser(id);
 
             if (user == null)
             {
@@ -73,14 +82,19 @@ namespace CarGaugesApi.Controllers
         // POST api/users
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody]User user)
+        public IActionResult CreateUser([FromBody]User user)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var state = await _usersService.CreateUser(user);
+            if (user == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var state = _usersService.CreateUser(user);
 
             if (state == EntityState.Added)
             {
@@ -94,30 +108,50 @@ namespace CarGaugesApi.Controllers
 
         // PUT api/users/5
         [HttpPut]
-        public async Task<IActionResult> UpdateUser ([FromBody] User user)
+        public IActionResult UpdateUser ([FromBody] User user)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _usersService.UpdateUser(user);
+            if (user == null)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            if (_usersService.UpdateUser(user) == EntityState.Modified)
+            {
+                return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         // DELETE: api/users/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser([FromRoute] int id)
+        public IActionResult DeleteUser([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            await _usersService.DeleteUser(id);
+            if (id == -1)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return Ok();
+            if (_usersService.DeleteUser(id) == EntityState.Deleted)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
     }
 }

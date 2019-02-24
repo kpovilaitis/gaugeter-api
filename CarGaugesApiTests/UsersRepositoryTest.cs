@@ -8,7 +8,7 @@ namespace CarGaugesApiTests
 {
     public class UsersRepositoryTest : IUsersRepository
     {
-        public async Task<User> GetUser(int id)
+        public User GetUser(int id)
         {
             var userIngrida = new User(3, "Ingrida2", "password", "good gal2", null);
 
@@ -16,10 +16,10 @@ namespace CarGaugesApiTests
             {
                 userIngrida = null;
             }
-            return await new Task<User>(() => userIngrida);
+            return userIngrida;
         }
 
-        public async Task<List<User>> GetAllUsers()
+        public List<User> GetAllUsers()
         {
             var userIngrida = new User(3, "Ingrida2", "password", "good gal2", null);
             var userKestutis = new User(4, "Kestutis", "password", "good boi", null);
@@ -28,52 +28,43 @@ namespace CarGaugesApiTests
                 userIngrida,
                 userKestutis
             };
-            return await new Task<List<User>>(() => userList);
+            return userList;
         }
 
-        public async Task<EntityState> CreateUser(User user)
-        {
-            var userIngrida = new User(3, "Ingrida2", "password", "good gal2", null);
-
-            if (user == userIngrida)
-            {
-                return await new Task<EntityState>(() => EntityState.Added);
-            }
-            else
-            {
-                return await new Task<EntityState>(() => EntityState.Unchanged);
-            }
+        public EntityState CreateUser(User user)
+        { 
+            return EntityState.Added;
         }
 
-        public async Task UpdateUser(User user)
+        public EntityState UpdateUser(User user)
         {
             var userIngrida = new User(3, "Ingrida2", "password", "good gal2", null);
 
             if (user.Id == userIngrida.Id)
             {
-                await new Task<EntityState>(() => EntityState.Modified);
+                return EntityState.Modified;
             }
             else
             {
-                await new Task<EntityState>(() => EntityState.Unchanged);
+                return EntityState.Unchanged;
             }
         }
 
-        public async Task DeleteUser(int id)
+        public EntityState DeleteUser(int id)
         {
             var userIngrida = new User(3, "Ingrida2", "password", "good gal2", null);
 
             if (id == userIngrida.Id)
             {
-                await new Task<EntityState>(() => EntityState.Deleted);
+                return EntityState.Deleted;
             }
             else
             {
-                await new Task<EntityState>(() => EntityState.Unchanged);
+                return EntityState.Unchanged;
             }
         }
 
-        public async Task<User> GetUser(string username, string password)
+        public User GetUser(string username, string password)
         {
             var userIngrida = new User(3, "Ingrida2", "password", "good gal2", null);
 
@@ -81,7 +72,7 @@ namespace CarGaugesApiTests
             {
                 userIngrida = null;
             }
-            return await new Task<User>(() => userIngrida);
+            return userIngrida;
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using CarGaugesApi.Helpers;
 using CarGaugesApi.Models;
 using CarGaugesApi.Repository;
@@ -26,7 +25,7 @@ namespace CarGaugesApi.Services
 
         public User Authenticate(string username, string password)
         {
-            var user = _usersRepository.GetUser(username, password).Result;
+            var user = _usersRepository.GetUser(username, password);
 
             // return null if user not found
             if (user == null)
@@ -54,29 +53,29 @@ namespace CarGaugesApi.Services
             return user;
         }
 
-        public async Task<User> GetUser(int id)
+        public User GetUser(int id)
         {
-            return await _usersRepository.GetUser(id);
+            return _usersRepository.GetUser(id);
         }
 
-        public async Task<List<User>> GetAllUsers()
+        public List<User> GetAllUsers()
         {
-            return await _usersRepository.GetAllUsers();
+            return _usersRepository.GetAllUsers();
         }
 
-        public async Task<EntityState> CreateUser(User user)
+        public EntityState CreateUser(User user)
         {
-            return await _usersRepository.CreateUser(user);
+            return _usersRepository.CreateUser(user);
         }
 
-        public async Task UpdateUser(User user)
+        public EntityState UpdateUser(User user)
         {
-            await _usersRepository.UpdateUser(user);
+            return _usersRepository.UpdateUser(user);
         }
 
-            public async Task DeleteUser(int id)
-            {
-                await _usersRepository.DeleteUser(id);
-            }
+        public EntityState DeleteUser(int id)
+        { 
+            return _usersRepository.DeleteUser(id);
+        }
     }
 }

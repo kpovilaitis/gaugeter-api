@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using CarGaugesApi.Data;
 using CarGaugesApi.Models;
 using Microsoft.EntityFrameworkCore;
@@ -16,46 +15,50 @@ namespace CarGaugesApi.Repository
             _context = context;
         }
 
-        public async Task<User> GetUser(int id)
+        public User GetUser(int id)
         {
-            return await _context.User.SingleOrDefaultAsync(m => m.Id == id);
+            return _context.User.SingleOrDefault(m => m.Id == id);
         }
 
-        public async Task<List<User>> GetAllUsers()
+        public List<User> GetAllUsers()
         {
-            return await _context.User.ToListAsync();
+            return _context.User.ToList();
         }
 
-        public async Task<EntityState> CreateUser(User user)
+        public EntityState CreateUser(User user)
         {
             var state = _context.User.Add(user).State;
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return state;
         }
 
-        public async Task UpdateUser(User user)
+        public EntityState UpdateUser(User user)
         {
             _context.Entry(user).State = EntityState.Modified;
 
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
+
+            return _context.Entry(user).State;
         }
 
-        public async Task DeleteUser(int id)
+        public EntityState DeleteUser(int id)
         {
-            var user = await _context.User.SingleOrDefaultAsync(m => m.Id == id);
+            var user = _context.User.SingleOrDefault(m => m.Id == id);
 
             if (user == null)
             {
-                return;
+                return EntityState.Unchanged;
             }
 
             _context.User.Remove(user);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
+
+            return EntityState.Modified;
         }
 
-        public async Task<User> GetUser(string username, string password)
+        public User GetUser(string username, string password)
         {
-            return await _context.User.SingleOrDefaultAsync(x => x.Username == username && x.Password == password);
+            return _context.User.SingleOrDefault(x => x.Username == username && x.Password == password);
         }
     }
 }

@@ -9,14 +9,14 @@ namespace CarGaugesApi.Services
     {
         User Authenticate(string username, string password);
 
-        Task<User> GetUser(int id);
+        User GetUser(int id);
 
-        Task<List<User>> GetAllUsers();
+        List<User> GetAllUsers();
 
-        Task<EntityState> CreateUser(User user);
+        EntityState CreateUser(User user);
 
-        Task UpdateUser(User user);
+        EntityState UpdateUser(User user);
 
-        Task DeleteUser(int id);
+        EntityState DeleteUser(int id);
     }
 }
