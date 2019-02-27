@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using CarGaugesApi.Constants;
 using CarGaugesApi.Data;
 using CarGaugesApi.Helpers;
 using CarGaugesApi.Repository;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,13 +26,14 @@ namespace CarGaugesApi
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc();
+
+            services.AddTransient<IUsersService, UsersService>();
+            services.AddTransient<IUsersRepository, UsersRepository>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
 
@@ -56,22 +59,12 @@ namespace CarGaugesApi
                 };
             });
 
-            services.AddTransient<IUsersService, UsersService>();
-            services.AddTransient<IUsersRepository, UsersRepository>();
-
-            /*services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info
-                {
-                    Title = "Swagger Sample",
-                    Version = "v1",
-                    // You can also set Description, Contact, License, TOS...
-                });
-
-                // Configure Swagger to use the xml documentation file
-                var xmlFile = Path.ChangeExtension(typeof(Startup).Assembly.Location, ".xml");
-                c.IncludeXmlComments(xmlFile);
-            });*/
+            services.AddApiVersioning(o => {
+                o.ReportApiVersions = true;
+                o.ApiVersionReader = new HeaderApiVersionReader("api-version");
+                //o.AssumeDefaultVersionWhenUnspecified = true;//Without this flag, the UnsupportedApiVersion exception will occur when the version is not specified by the client.
+                o.DefaultApiVersion = new ApiVersion(AppVersions.APP_VERSION_APPLE, AppVersions.APP_VERSION_APPLE_MINOR);
+            });
 
             services.AddDbContext<CarGaugesDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("CarGaugesDbContext")));
             services.AddCors(options =>
@@ -98,11 +91,8 @@ namespace CarGaugesApi
 
             app.UseHttpsRedirection();
             app.UseCors("CorsPolicy");
-            /*app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger Sample");
-            });*/
             app.UseAuthentication();
+            //app.UseApiVersioning();
             app.UseMvc();
         }
     }

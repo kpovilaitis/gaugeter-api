@@ -11,6 +11,7 @@ using CarGaugesApi.Constants;
 namespace CarGaugesApi.Controllers
 {
     [Authorize]
+    [ApiVersion("1.0")]
     [Produces("application/json")]
     [Route("api/[controller]")]
     public class UsersController : Controller
@@ -24,21 +25,23 @@ namespace CarGaugesApi.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
+        //[ApiVersion("1.0")]
         [AllowAnonymous]
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody]User userParam)
         {
-            if (double.Parse(_httpContextAccessor.HttpContext.Request.Headers["AppVersion"]) == AppVersions.APP_VERSION_APPLE)
-            {
-                var user = _usersService.Authenticate(userParam.Username, userParam.Password);
+            //if (double.Parse(_httpContextAccessor.HttpContext.Request.Headers["AppVersion"]) == AppVersions.APP_VERSION_APPLE)
+            //{
 
-                if (user == null)
-                    return BadRequest(new { message = "Username or password is incorrect" });
+            //}
 
-                return Ok(user);
-            }
+            //return BadRequest();
+            var user = _usersService.Authenticate(userParam.Username, userParam.Password);
 
-            return BadRequest();
+            if (user == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            return Ok(user);
         }
 
         // GET api/users/5

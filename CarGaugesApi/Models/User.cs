@@ -1,4 +1,6 @@
-﻿namespace CarGaugesApi.Models
+﻿using static CarGaugesApi.Constants.Enums;
+
+namespace CarGaugesApi.Models
 {
     public class User
     {
@@ -10,17 +12,20 @@
 
         public string Description { get; set; }
 
+        public MEASUREMENT_SYSTEM MeasurementSystem { get; set; }
+
         public string Token { get; set; }
 
         public User() { }
 
-        public User(int id, string username, string password, string description, string token)
-        {
-            Id = id;
-            Username = username;
-            Password = password;
-            Description = description;
-            Token = token;
-        }
+        //public User(int id, string username, string password, string description, MEASUREMENT_SYSTEM mesSystem, string token)
+        //{
+        //    Id = id;
+        //    Username = username;
+        //    Password = password;
+        //    Description = description;
+        //    MeasurementSystem = mesSystem;
+        //    Token = token;
+        //}
     }
 }

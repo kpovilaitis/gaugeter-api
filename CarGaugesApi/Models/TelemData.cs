@@ -2,5 +2,6 @@
 {
     public class TelemData
     {
+        public int Id { get; set; }
     }
 }
