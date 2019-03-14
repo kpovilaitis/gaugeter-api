@@ -12,6 +12,8 @@
     <Folder Include="Repository\" />
     <Folder Include="Helpers\" />
     <Folder Include="Constants\" />
+    <Folder Include="Authentication\" />
+    <Folder Include="Services\Users\" />
   </ItemGroup>
 
   <ItemGroup>

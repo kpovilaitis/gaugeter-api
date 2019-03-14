@@ -1,12 +1,9 @@
-﻿using System.Threading.Tasks;
-using CarGaugesApi.Models;
-using CarGaugesApi.Services;
+﻿using CarGaugesApi.Models;
+using CarGaugesApi.Services.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-using System;
-using CarGaugesApi.Constants;
 
 namespace CarGaugesApi.Controllers
 {
@@ -25,17 +22,10 @@ namespace CarGaugesApi.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        //[ApiVersion("1.0")]
         [AllowAnonymous]
         [HttpPost("authenticate")]
         public IActionResult Authenticate([FromBody]User userParam)
         {
-            //if (double.Parse(_httpContextAccessor.HttpContext.Request.Headers["AppVersion"]) == AppVersions.APP_VERSION_APPLE)
-            //{
-
-            //}
-
-            //return BadRequest();
             var user = _usersService.Authenticate(userParam.Username, userParam.Password);
 
             if (user == null)
@@ -80,6 +70,13 @@ namespace CarGaugesApi.Controllers
             }
 
             return Ok(users);
+        }
+
+        // GET api/users
+        [HttpGet("Values")]
+        public IActionResult GetValues()
+        {
+            return Ok(new string[] { "value1", "value2" });
         }
 
         // POST api/users

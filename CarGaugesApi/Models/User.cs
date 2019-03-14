@@ -16,7 +16,9 @@ namespace CarGaugesApi.Models
 
         public string Token { get; set; }
 
-        public User() { }
+        public string RefreshToken { get; set; }
+
+        public User() { /* Required by EF */ }
 
         //public User(int id, string username, string password, string description, MEASUREMENT_SYSTEM mesSystem, string token)
         //{

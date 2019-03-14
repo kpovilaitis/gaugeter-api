@@ -8,7 +8,7 @@
 
         public string BluetoothAddress { get; set; }
 
-        public Device() { }
+        public Device() { /* Required by EF */ }
 
         //public Device(string name, string bluetoothAddress) {
         //    Name = name;

@@ -3,35 +3,22 @@ using CarGaugesApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CarGaugesApi.Migrations
 {
     [DbContext(typeof(CarGaugesDbContext))]
-    partial class CarGaugesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190303133837_refresh_token")]
+    partial class refresh_token
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.1.8-servicing-32085")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("CarGaugesApi.Models.Device", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("BluetoothAddress");
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Device");
-                });
 
             modelBuilder.Entity("CarGaugesApi.Models.User", b =>
                 {
@@ -54,21 +41,6 @@ namespace CarGaugesApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("User");
-                });
-
-            modelBuilder.Entity("CarGaugesApi.Models.Work", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("DeviceId");
-
-                    b.Property<int>("Duration");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Work");
                 });
 #pragma warning restore 612, 618
         }

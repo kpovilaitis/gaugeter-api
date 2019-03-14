@@ -1,15 +1,17 @@
 ﻿using System.Text;
+using CarGaugesApi.Authentication;
 using CarGaugesApi.Constants;
 using CarGaugesApi.Data;
 using CarGaugesApi.Helpers;
 using CarGaugesApi.Repository;
-using CarGaugesApi.Services;
+using CarGaugesApi.Services.Users;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +34,7 @@ namespace CarGaugesApi
 
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<IUsersRepository, UsersRepository>();
+            services.AddTransient<ITokenFactory, TokenFactory>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -41,21 +44,22 @@ namespace CarGaugesApi
             var appSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
 
-            services.AddAuthentication(x =>
+            services.AddAuthentication(options =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-            .AddJwtBearer(x =>
+            .AddJwtBearer(options =>
             {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateAudience = false,
+                    ValidateLifetime = true
                 };
             });
 
@@ -65,6 +69,9 @@ namespace CarGaugesApi
                 //o.AssumeDefaultVersionWhenUnspecified = true;//Without this flag, the UnsupportedApiVersion exception will occur when the version is not specified by the client.
                 o.DefaultApiVersion = new ApiVersion(AppVersions.APP_VERSION_APPLE, AppVersions.APP_VERSION_APPLE_MINOR);
             });
+
+            services.Configure<GzipCompressionProviderOptions>(options => options.Level = System.IO.Compression.CompressionLevel.Optimal);
+            services.AddResponseCompression();
 
             services.AddDbContext<CarGaugesDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("CarGaugesDbContext")));
             services.AddCors(options =>
@@ -92,7 +99,7 @@ namespace CarGaugesApi
             app.UseHttpsRedirection();
             app.UseCors("CorsPolicy");
             app.UseAuthentication();
-            //app.UseApiVersioning();
+            app.UseResponseCompression();
             app.UseMvc();
         }
     }

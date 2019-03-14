@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using CarGaugesApi.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CarGaugesApi.Services
+namespace CarGaugesApi.Services.Users
 {
     public interface IUsersService
     {

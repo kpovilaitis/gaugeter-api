@@ -8,7 +8,7 @@
 
         public int Duration { get; set; }
 
-        public Work() { }
+        public Work() { /* Required by EF */ }
 
         //public Work(int id, int duration) {
         //    DeviceId = id;
