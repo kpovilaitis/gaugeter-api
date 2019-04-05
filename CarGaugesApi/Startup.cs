@@ -1,10 +1,16 @@
 ﻿using System.Text;
 using CarGaugesApi.Authentication;
+using CarGaugesApi.Authentication.Configuration;
 using CarGaugesApi.Constants;
 using CarGaugesApi.Data;
 using CarGaugesApi.Helpers;
+using CarGaugesApi.Helpers.HashGenerator;
 using CarGaugesApi.Repository;
+using CarGaugesApi.Repository.DevicesRepo;
+using CarGaugesApi.Repository.UsersRepo;
+using CarGaugesApi.Services.Devices;
 using CarGaugesApi.Services.Users;
+using CarGaugesApi.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,7 +21,6 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 
 namespace CarGaugesApi
 {
@@ -34,34 +39,16 @@ namespace CarGaugesApi
 
             services.AddTransient<IUsersService, UsersService>();
             services.AddTransient<IUsersRepository, UsersRepository>();
-            services.AddTransient<ITokenFactory, TokenFactory>();
+            //services.AddTransient<ITokenFactory, TokenFactory>();
+            services.AddTransient<IDevicesService, DevicesService>();
+            services.AddTransient<IDevicesRepository, DevicesRepository>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<IHashGenerator, HashGenerator>();
 
-            var appSettingsSection = Configuration.GetSection("AppSettings");
-            services.Configure<AppSettings>(appSettingsSection);
+            services.AddGaugeterAuthentication();
 
-            // configure jwt authentication
-            var appSettings = appSettingsSection.Get<AppSettings>();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true
-                };
-            });
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<AuthenticationSettings>(Configuration.GetSection("Authentication"));
 
             services.AddApiVersioning(o => {
                 o.ReportApiVersions = true;
@@ -84,19 +71,11 @@ namespace CarGaugesApi
             });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseHsts();
-            }
-
-            app.UseHttpsRedirection();
+            
             app.UseCors("CorsPolicy");
             app.UseAuthentication();
             app.UseResponseCompression();

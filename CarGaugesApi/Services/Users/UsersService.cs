@@ -1,83 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using CarGaugesApi.Authentication;
-using CarGaugesApi.Helpers;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using CarGaugesApi.Helpers.HashGenerator;
 using CarGaugesApi.Models;
-using CarGaugesApi.Repository;
+using CarGaugesApi.Repository.UsersRepo;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 
 namespace CarGaugesApi.Services.Users
 {
     public class UsersService : IUsersService
     {
         private readonly IUsersRepository _usersRepository;
-        private readonly ITokenFactory _tokenFactory;
-        private readonly AppSettings _appSettings;
+        private readonly IHashGenerator _hashGenerator;
 
-        public UsersService(IUsersRepository usersRepository, ITokenFactory tokenFactory, IOptions<AppSettings> appSettings)
+        public UsersService(IUsersRepository usersRepository, IHashGenerator hashGenerator)
         {
             _usersRepository = usersRepository;
-            _tokenFactory = tokenFactory;
-            _appSettings = appSettings.Value;
+            _hashGenerator = hashGenerator;
         }
 
-        public User Authenticate(string username, string password)
+        public async Task<User> GetUser(string userId)
         {
-            var user = _usersRepository.GetUser(username, password);
-
-            if (user == null)
-                return null;
-
-            //// authentication successful so generate jwt token
-            //var tokenHandler = new JwtSecurityTokenHandler();
-            //var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            //var tokenDescriptor = new SecurityTokenDescriptor
-            //{
-            //    Subject = new ClaimsIdentity(new Claim[]
-            //    {
-            //        new Claim(ClaimTypes.Name, user.Id.ToString())
-            //    }),
-            //    Expires = DateTime.UtcNow.AddDays(7),
-            //    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            //};
-            //var token = tokenHandler.CreateToken(tokenDescriptor);
-
-            user.Token = _tokenFactory.GetAuthToken(user.Id.ToString(), _appSettings.Secret);
-            user.RefreshToken = _tokenFactory.GetRefreshToken();
-            // remove password before returning
-            user.Password = null;
-
-            return user;
+            return await _usersRepository.GetUser(userId);
         }
 
-        public User GetUser(int id)
+        public async Task<List<User>> GetAllUsers()
         {
-            return _usersRepository.GetUser(id);
+            var list = await _usersRepository.GetAllUsers();
+
+            list.ForEach(i => i.Password = null);
+
+            return list;
         }
 
-        public List<User> GetAllUsers()
+        public async Task<EntityState> CreateUser(User user)
         {
-            return _usersRepository.GetAllUsers();
+            user.Password = _hashGenerator.ComputeSha1Hash(user.Password);
+
+            return await _usersRepository.CreateUser(user);
         }
 
-        public EntityState CreateUser(User user)
+        public async Task<EntityState> UpdateUser(User user)
         {
-            return _usersRepository.CreateUser(user);
+            user.Password = _hashGenerator.ComputeSha1Hash(user.Password);
+
+            return await _usersRepository.UpdateUser(user);
         }
 
-        public EntityState UpdateUser(User user)
-        {
-            return _usersRepository.UpdateUser(user);
-        }
-
-        public EntityState DeleteUser(int id)
+        public async Task<EntityState> DeleteUser(string userId)
         { 
-            return _usersRepository.DeleteUser(id);
+            return await _usersRepository.DeleteUser(userId);
         }
     }
 }

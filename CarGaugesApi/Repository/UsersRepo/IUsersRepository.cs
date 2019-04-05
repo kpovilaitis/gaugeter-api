@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using CarGaugesApi.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace CarGaugesApi.Services.Users
+namespace CarGaugesApi.Repository.UsersRepo
 {
-    public interface IUsersService
+    public interface IUsersRepository
     {
-        Task<User> GetUser(string userId);
+        Task<User> GetUser(string id);
 
         Task<List<User>> GetAllUsers();
 
@@ -15,6 +15,6 @@ namespace CarGaugesApi.Services.Users
 
         Task<EntityState> UpdateUser(User user);
 
-        Task<EntityState> DeleteUser(string userId);
+        Task<EntityState> DeleteUser(string id);
     }
 }

@@ -14,6 +14,7 @@ namespace CarGaugesApi
             WebHost.CreateDefaultBuilder(args)
                 //.UseUrls("https://192.168.1.226:5001")
                 //.UseSetting("https_port", "443")
+                .UseKestrel()
                 .UseStartup<Startup>();
     }
 }

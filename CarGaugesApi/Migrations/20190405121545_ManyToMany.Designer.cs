@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CarGaugesApi.Migrations
 {
     [DbContext(typeof(CarGaugesDbContext))]
-    [Migration("20190224192635_addedTables")]
-    partial class addedTables
+    [Migration("20190405121545_ManyToMany")]
+    partial class ManyToMany
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -22,38 +22,51 @@ namespace CarGaugesApi.Migrations
 
             modelBuilder.Entity("CarGaugesApi.Models.Device", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("BluetoothAddress")
+                        .ValueGeneratedOnAdd();
 
-                    b.Property<string>("BluetoothAddress");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(20);
 
-                    b.Property<string>("Name");
-
-                    b.HasKey("Id");
+                    b.HasKey("BluetoothAddress");
 
                     b.ToTable("Device");
                 });
 
             modelBuilder.Entity("CarGaugesApi.Models.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<string>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasMaxLength(20);
 
                     b.Property<string>("Description");
 
                     b.Property<int>("MeasurementSystem");
 
-                    b.Property<string>("Password");
+                    b.Property<string>("Password")
+                        .IsRequired();
+
+                    b.Property<string>("RefreshToken");
 
                     b.Property<string>("Token");
 
-                    b.Property<string>("Username");
-
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
                     b.ToTable("User");
+                });
+
+            modelBuilder.Entity("CarGaugesApi.Models.UserDevice", b =>
+                {
+                    b.Property<string>("UserId");
+
+                    b.Property<string>("DeviceAddress");
+
+                    b.HasKey("UserId", "DeviceAddress");
+
+                    b.HasIndex("DeviceAddress");
+
+                    b.ToTable("UserDevice");
                 });
 
             modelBuilder.Entity("CarGaugesApi.Models.Work", b =>
@@ -62,13 +75,26 @@ namespace CarGaugesApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("DeviceId");
+                    b.Property<string>("DeviceAddress");
 
                     b.Property<int>("Duration");
 
                     b.HasKey("Id");
 
                     b.ToTable("Work");
+                });
+
+            modelBuilder.Entity("CarGaugesApi.Models.UserDevice", b =>
+                {
+                    b.HasOne("CarGaugesApi.Models.Device", "Device")
+                        .WithMany("DeviceUsers")
+                        .HasForeignKey("DeviceAddress")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("CarGaugesApi.Models.User", "User")
+                        .WithMany("UserDevices")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

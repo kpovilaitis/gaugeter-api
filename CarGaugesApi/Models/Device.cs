@@ -1,18 +1,20 @@
-﻿namespace CarGaugesApi.Models
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace CarGaugesApi.Models
 {
     public class Device
     {
-        public int Id { get; set; }
+        public Device() { }
 
-        public string Name { get; set; }
-
+        [Key]
+        [Required]
         public string BluetoothAddress { get; set; }
 
-        public Device() { /* Required by EF */ }
+        [Required]
+        [MaxLength(20), MinLength(5)]
+        public string Name { get; set; }
 
-        //public Device(string name, string bluetoothAddress) {
-        //    Name = name;
-        //    BluetoothAddress = bluetoothAddress;
-        //}
+        public List<UserDevice> DeviceUsers { get; set; }
     }
 }
