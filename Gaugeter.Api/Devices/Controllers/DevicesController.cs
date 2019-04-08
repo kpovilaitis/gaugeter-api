@@ -1,36 +1,84 @@
-﻿using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
+using AutoMapper;
 using Gaugeter.Api.Authentication.Services.UserInfoAccessor;
-using Gaugeter.Api.Devices.Models;
+using Gaugeter.Api.Devices.Models.Data;
+using Gaugeter.Api.Devices.Models.Dto;
 using Gaugeter.Api.Services.Devices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CarGaugesApi.Devices.Controllers
 {
     [Authorize]
     [ApiVersion("1.0")]
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class DevicesController : Controller
     {
-        public readonly IDevicesService _devicesService;
-        public readonly IUserInfoAccessor _userInfoAccessor;
+        private readonly IDevicesService _devicesService;
+        private readonly IMapper _mapper;
+        private readonly IUserInfoAccessorService _userInfoAccessor;
 
-        public DevicesController(IDevicesService devicesService, IUserInfoAccessor userInfoAccessor)
+        public DevicesController(IDevicesService devicesService, IMapper mapper, IUserInfoAccessorService userInfoAccessor)
         {
             _devicesService = devicesService;
+            _mapper = mapper;
             _userInfoAccessor = userInfoAccessor;
         }
 
-        // POST api/users
-        [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> AddDeviceToUser([FromBody]Device device)
+        public async Task<IActionResult> AddDeviceToUser([FromBody][Required] Device device)
         {
-            var state = await _devicesService.AddDeviceToUser(_userInfoAccessor.GetUserId(), device);
+            if (EntityState.Added == await _devicesService.AddDeviceToUser(_userInfoAccessor.GetUserId(), device))
+                return Ok();
+            else
+                return BadRequest();
+        }
 
-            return Ok();
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody][Required] Device device)
+        {
+            if (EntityState.Added == await _devicesService.Create(device))
+            {
+                var mappedDevice = _mapper.Map<Device, DeviceDto>(device);
+                return CreatedAtAction(nameof(Get), new { id = device.BluetoothAddress }, mappedDevice);
+            }
+            else
+                return BadRequest();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get([FromBody][Required] string bluetoothAddress)
+        {
+            var device = await _devicesService.Get(bluetoothAddress);
+
+            if (device == null)
+                return NoContent();
+
+            return Ok(device);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserDevices()
+        {
+            var device = await _devicesService.GetUserDevices(_userInfoAccessor.GetUserId());
+
+            if (device == null)
+                return NoContent();
+
+            return Ok(device);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Remove([FromBody][Required] string bluetoothAddress)
+        {
+            if (await _devicesService.Remove(bluetoothAddress) == EntityState.Deleted)
+                return Ok();
+            else
+                return NoContent();
         }
     }
 }

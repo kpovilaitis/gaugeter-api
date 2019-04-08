@@ -1,22 +1,29 @@
 ﻿using System.Threading.Tasks;
 using Gaugeter.Api.Data;
-using Gaugeter.Api.Users.Models;
+using Gaugeter.Api.Users.Models.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gaugeter.Api.Authentication.Repository.AuthRepo
 {
     public class AuthRepository : IAuthRepository
     {
-        private readonly CarGaugesDbContext _context;
+        private readonly GaugeterDbContext _context;
 
-        public AuthRepository(CarGaugesDbContext context)
+        public AuthRepository(GaugeterDbContext context)
         {
             _context = context;
         }
 
         public async Task<User> GetUser(string userId, string password)
         {
-            return await _context.User.SingleOrDefaultAsync(x => x.UserId == userId && x.Password == password);
+            try
+            {
+                return await _context.User.SingleAsync(x => x.UserId == userId && x.Password == password);
+            } 
+            catch
+            {
+                return null;
+            }
         }
     }
 }

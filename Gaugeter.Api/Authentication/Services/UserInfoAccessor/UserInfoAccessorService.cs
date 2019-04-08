@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace Gaugeter.Api.Authentication.Services.UserInfoAccessor
 {
-    public class UserInfoAccessor : IUserInfoAccessor
+    public class UserInfoAccessorService : IUserInfoAccessorService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserInfoAccessor(IHttpContextAccessor httpContextAccessor)
+        public UserInfoAccessorService(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }

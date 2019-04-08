@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Gaugeter.Api.Authentication.Models;
+using Gaugeter.Api.Authentication.Models.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gaugeter.Api.Authentication.Repository.TokenRepo

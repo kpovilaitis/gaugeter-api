@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using Gaugeter.Api.Authentication.Models;
+using Gaugeter.Api.Authentication.Models.Data;
 using Gaugeter.Api.Authentication.Repository.TokenRepo;
 using Gaugeter.Api.Helpers.HashGenerator;
 using Gaugeter.Api.Settings;
@@ -23,17 +23,6 @@ namespace Gaugeter.Api.Authentication.Services.TokenService
             _apiSettings = apiSettings.CurrentValue;
         }
 
-        public string CreateRefreshToken()
-        {
-            var randomNumber = new byte[32];
-
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomNumber);
-                return Convert.ToBase64String(randomNumber);
-            }
-        }
-
         public async Task<string> CreateToken(string userId)
         {
             var token = _hashGenerator.ComputeSha256Hash(userId + DateTime.Now.Ticks.ToString());
@@ -42,6 +31,7 @@ namespace Gaugeter.Api.Authentication.Services.TokenService
             {
                  UserId = userId,
                  Token = $"Bearer {token}",
+                 RefreshToken = CreateRefreshToken(),
                  ExpirationDate = DateTime.Now.AddHours(_apiSettings.TokenValidHours)
             });
 
@@ -61,6 +51,17 @@ namespace Gaugeter.Api.Authentication.Services.TokenService
         public async Task<EntityState> RemoveToken(string token)
         {
             return await _tokenRepository.RemoveToken(token);
+        }
+
+        private string CreateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }
         }
     }
 }

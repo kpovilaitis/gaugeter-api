@@ -4,92 +4,84 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 using Gaugeter.Api.Users.Services;
-using Gaugeter.Api.Users.Models;
+using System.ComponentModel.DataAnnotations;
+using Gaugeter.Api.Users.Models.Data;
+using AutoMapper;
+using Gaugeter.Api.Users.Models.Dto;
+using System.Collections.Generic;
 
 namespace Gaugeter.Api.Users.Controllers
 {
     [Authorize]
     [ApiVersion("1.0")]
     [Produces("application/json")]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class UsersController : Controller
     {
-        public readonly IUsersService _usersService;
+        private readonly IUsersService _usersService;
+        private readonly IMapper _mapper;
 
-        public UsersController(IUsersService usersService)
+        public UsersController(IUsersService usersService, IMapper mapper)
         {
             _usersService = usersService;
+            _mapper = mapper;
         }
 
-        // GET api/users/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser(string userId)
+        [HttpGet]
+        public async Task<IActionResult> Get([FromQuery] string userId)
         {
             var user = await _usersService.GetUser(userId);
 
             if (user == null)
-                return NotFound();
+                return NoContent();
 
-            return Ok(user);
+            return Ok(_mapper.Map<User, UserDto>(user));
         }
 
-        // GET api/users
         [HttpGet]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAll()
         {
             var users = await _usersService.GetAllUsers();
 
             if (users == null)
-                return NotFound();
-
-            return Ok(users);
+                return NoContent();
+                
+            return Ok(_mapper.Map<IEnumerable<User>, IEnumerable<UserDto>>(users));
         }
 
-        // GET api/users
-        [HttpGet("Values")]
-        public async Task<IActionResult> GetValues()
-        {
-            return Ok(new string[] { "value1", "value2" });
-        }
-
-        // POST api/users
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody]User user)
+        public async Task<IActionResult> Create([FromBody][Required] User user)
         {
-            if (user == null)
-                return BadRequest(ModelState);
-
-            var state = await _usersService.CreateUser(user);
-
-            if (state == EntityState.Added)
-                return CreatedAtAction("GetUser", new { id = user.UserId }, user);
+            if (await _usersService.CreateUser(user) == EntityState.Added)
+            {
+                var mappedUser = _mapper.Map<User, UserDto>(user);
+                return CreatedAtAction(nameof(Get), new { id = user.UserId }, mappedUser);
+            }
             else
                 return StatusCode(StatusCodes.Status500InternalServerError);
         }
 
-        // PUT api/users/5
         [HttpPut]
-        public async Task<IActionResult> UpdateUser ([FromBody] User user)
+        public async Task<IActionResult> Update([FromBody][Required] User user)
         {
-            if (user == null)
-                return BadRequest(ModelState);
-
             if (await _usersService.UpdateUser(user) == EntityState.Modified)
-                return CreatedAtAction("GetUser", new { id = user.UserId }, user);
+            {
+                var mappedUser = _mapper.Map<User, UserDto>(user);
+                return CreatedAtAction(nameof(Get), new { id = user.UserId }, mappedUser);
+            }
             else
                 return BadRequest(ModelState);
         }
 
-        // DELETE: api/users/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser([FromRoute] string userId)
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromRoute][Required] string userId)
         {
             if (await _usersService.DeleteUser(userId) == EntityState.Deleted)
                 return Ok();
             else
-                return NotFound();
+                return NoContent();
         }
     }
 }

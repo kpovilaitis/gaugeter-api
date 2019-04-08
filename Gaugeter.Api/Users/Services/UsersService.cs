@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Gaugeter.Api.Helpers.HashGenerator;
-using Gaugeter.Api.Users.Models;
+using Gaugeter.Api.Users.Models.Data;
 using Gaugeter.Api.Users.Repository;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,13 +23,9 @@ namespace Gaugeter.Api.Users.Services
             return await _usersRepository.GetUser(userId);
         }
 
-        public async Task<List<User>> GetAllUsers()
+        public async Task<IEnumerable<User>> GetAllUsers()
         {
-            var list = await _usersRepository.GetAllUsers();
-
-            list.ForEach(i => i.Password = null);
-
-            return list;
+            return await _usersRepository.GetAllUsers();
         }
 
         public async Task<EntityState> CreateUser(User user)

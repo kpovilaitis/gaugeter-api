@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Gaugeter.Api.Users.Models;
+using Gaugeter.Api.Users.Models.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gaugeter.Api.Users.Repository
@@ -9,7 +9,7 @@ namespace Gaugeter.Api.Users.Repository
     {
         Task<User> GetUser(string id);
 
-        Task<List<User>> GetAllUsers();
+        Task<IEnumerable<User>> GetAllUsers();
 
         Task<EntityState> CreateUser(User user);
 

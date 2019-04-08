@@ -1,5 +1,6 @@
-﻿using System.Threading.Tasks;
-using Gaugeter.Api.Devices.Models;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Gaugeter.Api.Devices.Models.Data;
 using Gaugeter.Api.Devices.Repository;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,15 +17,27 @@ namespace Gaugeter.Api.Services.Devices
 
         public async Task<EntityState> AddDeviceToUser(string userId, Device device)
         {
-            var existingDevice = await _devicesRepository.GetDevice(device.BluetoothAddress);
+            return await _devicesRepository.AddDeviceToUser(userId, device);
+        }
 
-            if (existingDevice == null)
-            {
-                await _devicesRepository.CreateDevice(device);
-                existingDevice = await _devicesRepository.GetDevice(device.BluetoothAddress);
-            }
+        public async Task<EntityState> Create(Device device)
+        {
+            return await _devicesRepository.Create(device);
+        }
 
-            return await _devicesRepository.AddDeviceToUser(userId, existingDevice);
+        public async Task<Device> Get(string bluetoothAddress)
+        {
+            return await _devicesRepository.Get(bluetoothAddress);
+        }
+
+        public async Task<IEnumerable<Device>> GetUserDevices(string userId)
+        {
+            return await _devicesRepository.GetUserDevices(userId);
+        }
+
+        public async Task<EntityState> Remove(string bluetoothAddress)
+        {
+            return await _devicesRepository.Remove(bluetoothAddress);
         }
     }
 }

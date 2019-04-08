@@ -1,5 +1,8 @@
-﻿using System.Threading.Tasks;
-using Gaugeter.Api.Authentication.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
+using AutoMapper;
+using Gaugeter.Api.Authentication.Models.Data;
+using Gaugeter.Api.Authentication.Models.Dto;
 using Gaugeter.Api.Authentication.Services.AuthService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,22 +15,24 @@ namespace Gaugeter.Api.Authentication.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IMapper _mapper;
 
-        public AuthenticationController(IAuthService authService)
+        public AuthenticationController(IAuthService authService, IMapper mapper)
         {
             _authService = authService;
+            _mapper = mapper;
         }
 
         [HttpPost]
         [Route("authenticate")]
-        public async Task<IActionResult> Authenticate([FromBody] LoginDto login)
+        public async Task<IActionResult> Authenticate([FromBody][Required] LoginDto login)
         {
-            var user = await _authService.Authenticate(login.UserId, login.Password);
+            var loginData = await _authService.Authenticate(login.User.UserId, login.User.Password);
 
-            if (user == null)
+            if (loginData == null)
                 return Unauthorized("Invalid login credentials");
                 
-            return Ok(user);
+            return Ok(_mapper.Map<Login, LoginDto>(loginData));
         }
     }
 }

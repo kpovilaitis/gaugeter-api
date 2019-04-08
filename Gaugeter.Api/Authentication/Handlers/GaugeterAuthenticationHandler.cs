@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace CarGaugesApi.Authentication.Handlers
+namespace Gaugeter.Api.Authentication.Handlers
 {
     public class GaugeterAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
@@ -25,7 +25,7 @@ namespace CarGaugesApi.Authentication.Handlers
             ISystemClock clock,
             ITokenService tokenService,
             IOptionsSnapshot<AuthenticationSettings> apiSettings
-            )
+        )
             : base(options, logger, encoder, clock)
         {
             _tokenService = tokenService;

@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
-using Gaugeter.Api.Users.Models;
+using Gaugeter.Api.Authentication.Models.Data;
 
 namespace Gaugeter.Api.Authentication.Services.AuthService
 {
     public interface IAuthService
     {
-        Task<User> Authenticate(string email, string password);
+        Task<Login> Authenticate(string email, string password);
     }
 }

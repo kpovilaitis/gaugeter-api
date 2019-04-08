@@ -1,6 +1,5 @@
 ﻿using Gaugeter.Api.Data;
 using Gaugeter.Api.Constants;
-using Gaugeter.Api.Helpers;
 using Gaugeter.Api.Helpers.HashGenerator;
 using Gaugeter.Api.Settings;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +10,8 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using Gaugeter.Api.Helpers.Mapper;
 
 namespace Gaugeter.Api.Configuration
 {
@@ -18,10 +19,12 @@ namespace Gaugeter.Api.Configuration
     {
         public static void AddGaugeterConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddSingleton( new MapperConfiguration( config => { config.AddProfile( new MappingProfile() ); } ).CreateMapper() );
+            services.AddMvc().AddJsonOptions(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IHashGenerator, HashGenerator>();
 
-            services.Configure<AppSettings>(configuration.GetSection("AppSettings"));
             services.Configure<AuthenticationSettings>(configuration.GetSection("Authentication"));
 
             services.AddApiVersioning(o =>
@@ -35,7 +38,7 @@ namespace Gaugeter.Api.Configuration
             services.Configure<GzipCompressionProviderOptions>(options => options.Level = System.IO.Compression.CompressionLevel.Optimal);
             services.AddResponseCompression();
 
-            services.AddDbContext<CarGaugesDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("GaugeterDbContext")));
+            services.AddDbContext<GaugeterDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("GaugeterDbContext")));
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",

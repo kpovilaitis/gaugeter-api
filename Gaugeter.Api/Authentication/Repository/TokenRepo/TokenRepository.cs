@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Gaugeter.Api.Authentication.Models;
+using Gaugeter.Api.Authentication.Models.Data;
 using Gaugeter.Api.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace CarGaugesApi.Authentication.Repository.TokenRepo
+namespace Gaugeter.Api.Authentication.Repository.TokenRepo
 {
     public class TokenRepository : ITokenRepository
     {
-        private readonly CarGaugesDbContext _context;
+        private readonly GaugeterDbContext _context;
 
-        public TokenRepository(CarGaugesDbContext context)
+        public TokenRepository(GaugeterDbContext context)
         {
             _context = context;
         }
@@ -23,27 +23,27 @@ namespace CarGaugesApi.Authentication.Repository.TokenRepo
 
         public async Task<ActiveToken> GetToken(string token)
         {
-            var activeToken = await _context.ActiveToken.SingleOrDefaultAsync(at => at.Token == token);
-            return activeToken;
+            return await _context.ActiveToken.FindAsync(token);
         }
 
         public async Task UpdateTokenExpiration(string token, DateTime expiration)
         {
-            var activeToken = await _context.ActiveToken.SingleOrDefaultAsync(at => at.Token == token);
+            var activeTokenEntity = await _context.ActiveToken.FindAsync(token);
 
-            activeToken.ExpirationDate = expiration;
+            if (activeTokenEntity != null)
+                activeTokenEntity.ExpirationDate = expiration;
 
             await _context.SaveChangesAsync();
         }
 
         public async Task<EntityState> RemoveToken(string token)
         {
-            var foundToken = await _context.ActiveToken.SingleOrDefaultAsync(at => at.Token == token);
+            var tokenEntity = await _context.ActiveToken.FindAsync(token);
 
-            if (foundToken == null)
+            if (tokenEntity == null)
                 return EntityState.Unchanged;
 
-            _context.ActiveToken.Remove(foundToken);
+            _context.ActiveToken.Remove(tokenEntity);
 
             await _context.SaveChangesAsync();
             return EntityState.Deleted;

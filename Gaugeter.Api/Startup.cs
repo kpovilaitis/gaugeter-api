@@ -20,12 +20,11 @@ namespace Gaugeter.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
-
             services.AddGaugeterConfiguration(Configuration);
             services.AddUsersConfiguration();
             services.AddDevicesConfiguration();
             services.AddGaugeterAuthentication();
+
         }        
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

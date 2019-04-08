@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Gaugeter.Api.Authentication.Models;
+using Gaugeter.Api.Authentication.Models.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gaugeter.Api.Authentication.Services.TokenService
@@ -14,7 +14,5 @@ namespace Gaugeter.Api.Authentication.Services.TokenService
         Task<string> CreateToken(string userId);
 
         Task<EntityState> RemoveToken(string token);
-
-        string CreateRefreshToken();
     }
 }

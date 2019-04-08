@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="Data\" />
     <Folder Include="Helpers\" />
     <Folder Include="Constants\" />
@@ -49,6 +48,13 @@
     <Folder Include="TelemData\Configuration\" />
     <Folder Include="Users\Configuration\" />
     <Folder Include="Configuration\" />
+    <Folder Include="Devices\Models\Data\" />
+    <Folder Include="Devices\Models\Dto\" />
+    <Folder Include="Users\Models\Data\" />
+    <Folder Include="Users\Models\Dto\" />
+    <Folder Include="Helpers\Mapper\" />
+    <Folder Include="Authentication\Models\Data\" />
+    <Folder Include="Authentication\Models\Dto\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -57,6 +63,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.2.3" />
+    <PackageReference Include="AutoMapper" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -73,5 +80,8 @@
     <Compile Remove="Migrations\20181202184334_added token to user.cs" />
     <Compile Remove="Migrations\20181202184334_added token to user.Designer.cs" />
     <Compile Remove="Migrations\20190224191117_addedTables.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Models\.DS_Store" />
   </ItemGroup>
 </Project>

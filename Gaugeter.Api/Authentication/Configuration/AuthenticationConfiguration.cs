@@ -17,7 +17,7 @@ namespace Gaugeter.Api.Authentication.Configuration
             services.AddTransient<IAuthRepository, AuthRepository>();
             services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<ITokenService, TokenService>();
-            services.AddTransient<IUserInfoAccessor, UserInfoAccessor>();
+            services.AddTransient<IUserInfoAccessorService, UserInfoAccessorService>();
             services.AddAuthentication("BasicAuthentication")
                 .AddScheme<AuthenticationSchemeOptions, GaugeterAuthenticationHandler>("BasicAuthentication", null);
 

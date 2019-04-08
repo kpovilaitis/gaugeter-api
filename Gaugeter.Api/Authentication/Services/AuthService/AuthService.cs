@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
+using Gaugeter.Api.Authentication.Models.Data;
 using Gaugeter.Api.Authentication.Repository.AuthRepo;
 using Gaugeter.Api.Authentication.Services.TokenService;
 using Gaugeter.Api.Helpers.HashGenerator;
-using Gaugeter.Api.Users.Models;
 
 namespace Gaugeter.Api.Authentication.Services.AuthService
 {
@@ -19,7 +19,7 @@ namespace Gaugeter.Api.Authentication.Services.AuthService
             _hashGenerator = hashGenerator;
         }
 
-        public async Task<User> Authenticate(string userId, string password)
+        public async Task<Login> Authenticate(string userId, string password)
         {
             var hashedPassword = _hashGenerator.ComputeSha1Hash(password);
 
@@ -27,11 +27,12 @@ namespace Gaugeter.Api.Authentication.Services.AuthService
 
             if (user == null)
                 return null;
-
-            user.Token = await _tokenService.CreateToken(userId);
-            user.Password = null;
-
-            return user;
+                
+            return new Login
+            {
+                 Token = await _tokenService.CreateToken(userId),
+                 User = user
+            };
         }
     }
 }

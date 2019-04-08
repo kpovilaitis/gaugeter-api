@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Gaugeter.Api.Constants;
+using Gaugeter.Api.Devices.Models.Dto;
 
-namespace Gaugeter.Api.Users.Models
+namespace Gaugeter.Api.Users.Models.Dto
 {
-    public class User
+    public class UserDto
     {
-        [Key]
         [Required]
         [MaxLength(20), MinLength(5)]
         public string UserId { get; set; }
@@ -19,10 +19,6 @@ namespace Gaugeter.Api.Users.Models
         [Required]
         public Enums.MEASUREMENT_SYSTEM MeasurementSystem { get; set; }
 
-        public string Token { get; set; }
-
-        public string RefreshToken { get; set; }
-
-        public List<UserDevice> UserDevices { get; set; }
+        //public IList<DeviceDto> Devices { get; set; }
     }
 }

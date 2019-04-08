@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Gaugeter.Api.Users.Models;
+using Gaugeter.Api.Users.Models.Data;
 
-namespace CarGaGaugeter.ApiugesApi.Authentication.Repository.AuthRepo
+namespace Gaugeter.Api.Authentication.Repository.AuthRepo
 {
     public interface IAuthRepository
     {

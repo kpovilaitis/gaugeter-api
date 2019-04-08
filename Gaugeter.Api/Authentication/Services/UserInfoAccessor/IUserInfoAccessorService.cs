@@ -1,6 +1,6 @@
 ﻿namespace Gaugeter.Api.Authentication.Services.UserInfoAccessor
 {
-    public interface IUserInfoAccessor
+    public interface IUserInfoAccessorService
     {
         string GetUserId();
     }

@@ -1,7 +1,7 @@
-﻿using Gaugeter.Api.Authentication.Models;
-using Gaugeter.Api.Devices.Models;
+﻿using Gaugeter.Api.Authentication.Models.Data;
+using Gaugeter.Api.Devices.Models.Data;
 using Gaugeter.Api.Jobs.Models;
-using Gaugeter.Api.Users.Models;
+using Gaugeter.Api.Users.Models.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gaugeter.Api.Data
@@ -24,18 +24,8 @@ namespace Gaugeter.Api.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserDevice>()
-                .HasKey(t => new { t.UserId, t.DeviceAddress });
-
-            modelBuilder.Entity<UserDevice>()
-                .HasOne(ud => ud.User)
-                .WithMany(u => u.UserDevices)
-                .HasForeignKey(ud => ud.UserId);
-
-            modelBuilder.Entity<UserDevice>()
-                .HasOne(ud => ud.Device)
-                .WithMany(d => d.DeviceUsers)
-                .HasForeignKey(ud => ud.DeviceAddress);
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Devices);
         }
     }
 }
