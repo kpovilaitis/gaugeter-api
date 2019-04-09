@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Gaugeter.Api.Constants;
-using Gaugeter.Api.Devices.Models.Data;
 
 namespace Gaugeter.Api.Users.Models.Data
 {
@@ -20,6 +19,6 @@ namespace Gaugeter.Api.Users.Models.Data
         [Required]
         public Enums.MEASUREMENT_SYSTEM MeasurementSystem { get; set; }
 
-        public IList<Device> Devices { get; set; }
+        public IList<UserDevice> Devices { get; set; }
     }
 }

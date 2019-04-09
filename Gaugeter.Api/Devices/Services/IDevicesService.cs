@@ -15,6 +15,6 @@ namespace Gaugeter.Api.Services.Devices
 
         Task<IEnumerable<Device>> GetUserDevices(string userId);
 
-        Task<EntityState> Remove(string bluetoothAddress);
+        Task<EntityState> Remove(string userId, string bluetoothAddress);
     }
 }

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Gaugeter.Api.Data;
 using Gaugeter.Api.Devices.Models.Data;
+using Gaugeter.Api.Users.Models.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gaugeter.Api.Devices.Repository
@@ -18,12 +19,15 @@ namespace Gaugeter.Api.Devices.Repository
 
         public async Task<EntityState> AddDeviceToUser(string userId, Device device)
         {
-            var user = await _context.User.FindAsync(userId);
+            var userEntity = await _context.User.FindAsync(userId);
 
-            if (user.Devices == null)
-                user.Devices = new List<Device>();
-
-            user.Devices.Add(device);
+            await _context.UserDevice.AddAsync(new UserDevice
+            {
+                User = userEntity,
+                UserId = userId,
+                BluetoothAddress = device.BluetoothAddress,
+                Device = await _context.Device.FindAsync(device.BluetoothAddress) ?? device
+            });
 
             await _context.SaveChangesAsync();
 
@@ -46,30 +50,25 @@ namespace Gaugeter.Api.Devices.Repository
 
         public async Task<IEnumerable<Device>> GetUserDevices(string userId)
         {
-            try
-            {
-                var userEntity = await _context.User.Include(u => u.Devices).SingleAsync(i => i.UserId == userId);
-
-                return userEntity.Devices.ToList();
-            }
-            catch
-            {
-                return null;
-            }
+            return await _context.UserDevice
+                    .Include(d => d.Device)
+                    .Where((arg) => arg.UserId == userId)
+                    .Select((arg) => arg.Device)
+                    .ToListAsync();
         }
 
-        public async Task<EntityState> Remove(string bluetoothAddress)
+        public async Task<EntityState> Remove(string userId, string bluetoothAddress)
         {
-            var deviceEntity = await _context.Device.FindAsync(bluetoothAddress);
+            var userDeviceEntity = await _context.UserDevice.FindAsync(userId, bluetoothAddress);
 
-            if (deviceEntity == null)
+            if (userDeviceEntity == null)
                 return EntityState.Unchanged;
 
-            var state = _context.Device.Remove(deviceEntity);
-
+            var userDeviceEntityState = _context.Entry(userDeviceEntity).State = EntityState.Deleted;
+            
             await _context.SaveChangesAsync();
 
-            return state.State;
+            return userDeviceEntityState;
         }
     }
 }

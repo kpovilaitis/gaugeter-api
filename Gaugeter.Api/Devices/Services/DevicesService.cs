@@ -35,9 +35,9 @@ namespace Gaugeter.Api.Services.Devices
             return await _devicesRepository.GetUserDevices(userId);
         }
 
-        public async Task<EntityState> Remove(string bluetoothAddress)
+        public async Task<EntityState> Remove(string userId, string bluetoothAddress)
         {
-            return await _devicesRepository.Remove(bluetoothAddress);
+            return await _devicesRepository.Remove(userId, bluetoothAddress);
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Gaugeter.Api.Data
         public DbSet<Device> Device { get; set; }
         public DbSet<Job> Job { get; set; }
         public DbSet<ActiveToken> ActiveToken { get; set; }
+        public DbSet<UserDevice> UserDevice { get; set; }
 
         //public DbSet<TelemData> TelemData { get; set; }
 
@@ -24,8 +25,21 @@ namespace Gaugeter.Api.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Devices);
+            modelBuilder.Entity<UserDevice>()
+                .HasKey(t => new { t.UserId, t.BluetoothAddress });
+
+            //modelBuilder.Entity<User>()
+            //.HasMany(u => u.Devices);
+
+            modelBuilder.Entity<UserDevice>()
+                .HasOne(ud => ud.User)
+                .WithMany(u => u.Devices)
+                .HasForeignKey(ud => ud.UserId);
+
+            modelBuilder.Entity<UserDevice>()
+                .HasOne(ud => ud.Device)
+                .WithMany(d => d.Users)
+                .HasForeignKey(ud => ud.BluetoothAddress);
         }
     }
 }

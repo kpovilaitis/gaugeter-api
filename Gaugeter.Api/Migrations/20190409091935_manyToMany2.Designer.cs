@@ -4,14 +4,16 @@ using Gaugeter.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Gaugeter.Api.Migrations
 {
     [DbContext(typeof(GaugeterDbContext))]
-    partial class GaugeterDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190409091935_manyToMany2")]
+    partial class manyToMany2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

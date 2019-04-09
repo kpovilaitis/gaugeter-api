@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
 using Gaugeter.Api.Authentication.Services.UserInfoAccessor;
@@ -64,18 +65,20 @@ namespace CarGaugesApi.Devices.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUserDevices()
         {
-            var device = await _devicesService.GetUserDevices(_userInfoAccessor.GetUserId());
+            var devices = await _devicesService.GetUserDevices(_userInfoAccessor.GetUserId());
 
-            if (device == null)
+            var mappedDevices = _mapper.Map<IEnumerable<Device>, IEnumerable<DeviceDto>>(devices);
+
+            if (mappedDevices == null)
                 return NoContent();
 
-            return Ok(device);
+            return Ok(mappedDevices);
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Remove([FromBody][Required] string bluetoothAddress)
+        public async Task<IActionResult> Remove([FromQuery][Required] string bluetoothAddress)
         {
-            if (await _devicesService.Remove(bluetoothAddress) == EntityState.Deleted)
+            if (await _devicesService.Remove(_userInfoAccessor.GetUserId(), bluetoothAddress) == EntityState.Deleted)
                 return Ok();
             else
                 return NoContent();

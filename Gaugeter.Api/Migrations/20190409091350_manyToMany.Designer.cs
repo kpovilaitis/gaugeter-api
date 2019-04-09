@@ -4,14 +4,16 @@ using Gaugeter.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Gaugeter.Api.Migrations
 {
     [DbContext(typeof(GaugeterDbContext))]
-    partial class GaugeterDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190409091350_manyToMany")]
+    partial class manyToMany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,7 +47,11 @@ namespace Gaugeter.Api.Migrations
                         .IsRequired()
                         .HasMaxLength(20);
 
+                    b.Property<string>("UserId");
+
                     b.HasKey("BluetoothAddress");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Device");
                 });
@@ -83,30 +89,11 @@ namespace Gaugeter.Api.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("Gaugeter.Api.Users.Models.Data.UserDevice", b =>
+            modelBuilder.Entity("Gaugeter.Api.Devices.Models.Data.Device", b =>
                 {
-                    b.Property<string>("UserId");
-
-                    b.Property<string>("BluetoothAddress");
-
-                    b.HasKey("UserId", "BluetoothAddress");
-
-                    b.HasIndex("BluetoothAddress");
-
-                    b.ToTable("UserDevice");
-                });
-
-            modelBuilder.Entity("Gaugeter.Api.Users.Models.Data.UserDevice", b =>
-                {
-                    b.HasOne("Gaugeter.Api.Devices.Models.Data.Device", "Device")
-                        .WithMany("Users")
-                        .HasForeignKey("BluetoothAddress")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Gaugeter.Api.Users.Models.Data.User", "User")
+                    b.HasOne("Gaugeter.Api.Users.Models.Data.User")
                         .WithMany("Devices")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

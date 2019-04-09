@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Gaugeter.Api.Users.Models.Data;
 
 namespace Gaugeter.Api.Devices.Models.Data
 {
@@ -12,5 +14,7 @@ namespace Gaugeter.Api.Devices.Models.Data
         [Required]
         [MaxLength(20), MinLength(5)]
         public string Name { get; set; }
+
+        public IList<UserDevice> Users { get; set; }
     }
 }
