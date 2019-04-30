@@ -89,7 +89,7 @@ namespace Gaugeter.Api.Devices.Controllers
         public async Task<IActionResult> Remove([FromQuery][Required] string bluetoothAddress)
         {
             if (await _devicesService.Remove(_userInfoAccessor.GetUserId(), bluetoothAddress) == EntityState.Deleted)
-                return Ok(new {});
+                return Ok();
                 
             return NoContent();
         }
