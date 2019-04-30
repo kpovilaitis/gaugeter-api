@@ -23,9 +23,9 @@ namespace Gaugeter.Api.Helpers.HashGenerator
 
         private string ComputeHash(string rawData, HashAlgorithm algorithm)
         {
-            byte[] bytes = algorithm.ComputeHash(Encoding.UTF8.GetBytes(rawData));
-
+            var bytes = algorithm.ComputeHash(Encoding.UTF8.GetBytes(rawData));
             var builder = new StringBuilder();
+            
             foreach (var item in bytes)
                 builder.Append(item.ToString("x2"));
 

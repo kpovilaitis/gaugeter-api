@@ -19,6 +19,9 @@ namespace Gaugeter.Api.Devices.Repository
 
         public async Task<EntityState> AddDeviceToUser(string userId, Device device)
         {
+            if (null != await _context.UserDevice.FindAsync(userId, device.BluetoothAddress))
+                return EntityState.Unchanged;
+            
             var userEntity = await _context.User.FindAsync(userId);
 
             await _context.UserDevice.AddAsync(new UserDevice
@@ -52,8 +55,8 @@ namespace Gaugeter.Api.Devices.Repository
         {
             return await _context.UserDevice
                     .Include(d => d.Device)
-                    .Where((arg) => arg.UserId == userId)
-                    .Select((arg) => arg.Device)
+                    .Where(arg => arg.UserId == userId)
+                    .Select(arg => arg.Device)
                     .ToListAsync();
         }
 

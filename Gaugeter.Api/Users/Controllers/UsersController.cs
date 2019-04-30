@@ -54,25 +54,23 @@ namespace Gaugeter.Api.Users.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody][Required] User user)
         {
-            if (await _usersService.CreateUser(user) == EntityState.Added)
-            {
-                var mappedUser = _mapper.Map<User, UserDto>(user);
-                return CreatedAtAction(nameof(Get), new { id = user.UserId }, mappedUser);
-            }
-            else
+            if (await _usersService.CreateUser(user) != EntityState.Added)
                 return StatusCode(StatusCodes.Status500InternalServerError);
+            
+            var mappedUser = _mapper.Map<User, UserDto>(user);
+            
+            return CreatedAtAction(nameof(Get), new { id = user.UserId }, mappedUser);
         }
 
         [HttpPut]
         public async Task<IActionResult> Update([FromBody][Required] User user)
         {
-            if (await _usersService.UpdateUser(user) == EntityState.Modified)
-            {
-                var mappedUser = _mapper.Map<User, UserDto>(user);
-                return CreatedAtAction(nameof(Get), new { id = user.UserId }, mappedUser);
-            }
-            else
+            if (await _usersService.UpdateUser(user) != EntityState.Modified) 
                 return BadRequest(ModelState);
+            
+            var mappedUser = _mapper.Map<User, UserDto>(user);
+            
+            return CreatedAtAction(nameof(Get), new { id = user.UserId }, mappedUser);
         }
 
         [HttpDelete]
@@ -80,8 +78,8 @@ namespace Gaugeter.Api.Users.Controllers
         {
             if (await _usersService.DeleteUser(userId) == EntityState.Deleted)
                 return Ok();
-            else
-                return NoContent();
+
+            return NoContent();
         }
     }
 }
