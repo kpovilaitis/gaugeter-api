@@ -33,8 +33,17 @@ namespace CarGaugesApi.Devices.Controllers
         [HttpPost]
         public async Task<IActionResult> AddDeviceToUser([FromBody][Required] Device device)
         {
-            if (EntityState.Added == await _devicesService.AddDeviceToUser(_userInfoAccessor.GetUserId(), device))
-                return Ok();
+            if (EntityState.Added == await _devicesService.AddDeviceToUser(_userInfoAccessor.GetUserId(), device)) 
+            {
+                var devices = await _devicesService.GetUserDevices(_userInfoAccessor.GetUserId());
+
+                var mappedDevices = _mapper.Map<IEnumerable<Device>, IEnumerable<DeviceDto>>(devices);
+
+                if (mappedDevices == null)
+                    return NoContent();
+
+                return Ok(mappedDevices);
+            } 
             else
                 return BadRequest();
         }
@@ -79,7 +88,16 @@ namespace CarGaugesApi.Devices.Controllers
         public async Task<IActionResult> Remove([FromQuery][Required] string bluetoothAddress)
         {
             if (await _devicesService.Remove(_userInfoAccessor.GetUserId(), bluetoothAddress) == EntityState.Deleted)
-                return Ok();
+            {
+                var devices = await _devicesService.GetUserDevices(_userInfoAccessor.GetUserId());
+
+                var mappedDevices = _mapper.Map<IEnumerable<Device>, IEnumerable<DeviceDto>>(devices);
+
+                if (mappedDevices == null)
+                    return NoContent();
+
+                return Ok(mappedDevices);
+            }
             else
                 return NoContent();
         }
