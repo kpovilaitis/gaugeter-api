@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -38,14 +38,8 @@
     <Folder Include="Jobs\Models\" />
     <Folder Include="Jobs\Services\" />
     <Folder Include="Jobs\Repository\" />
-    <Folder Include="TelemData\" />
-    <Folder Include="TelemData\Controllers\" />
-    <Folder Include="TelemData\Services\" />
-    <Folder Include="TelemData\Models\" />
-    <Folder Include="TelemData\Repository\" />
     <Folder Include="Devices\Configuration\" />
     <Folder Include="Jobs\Configuration\" />
-    <Folder Include="TelemData\Configuration\" />
     <Folder Include="Users\Configuration\" />
     <Folder Include="Configuration\" />
     <Folder Include="Devices\Models\Data\" />

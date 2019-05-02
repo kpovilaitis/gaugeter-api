@@ -1,6 +1,6 @@
 ﻿using Gaugeter.Api.Authentication.Models.Data;
 using Gaugeter.Api.Devices.Models.Data;
-using Gaugeter.Api.Jobs.Models;
+using Gaugeter.Api.Jobs.Models.Data;
 using Gaugeter.Api.Users.Models.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +16,7 @@ namespace Gaugeter.Api.Data
         public DbSet<ActiveToken> ActiveToken { get; set; }
         public DbSet<UserDevice> UserDevice { get; set; }
 
-        //public DbSet<TelemData> TelemData { get; set; }
+        public DbSet<TelemData> TelemData { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -28,9 +28,6 @@ namespace Gaugeter.Api.Data
             modelBuilder.Entity<UserDevice>()
                 .HasKey(t => new { t.UserId, t.BluetoothAddress });
 
-            //modelBuilder.Entity<User>()
-            //.HasMany(u => u.Devices);
-
             modelBuilder.Entity<UserDevice>()
                 .HasOne(ud => ud.User)
                 .WithMany(u => u.Devices)
@@ -40,6 +37,9 @@ namespace Gaugeter.Api.Data
                 .HasOne(ud => ud.Device)
                 .WithMany(d => d.Users)
                 .HasForeignKey(ud => ud.BluetoothAddress);
+
+            modelBuilder.Entity<Job>()
+                .HasMany(j => j.Telem);
         }
     }
 }

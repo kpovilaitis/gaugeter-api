@@ -19,6 +19,6 @@ namespace Gaugeter.Api.Users.Models.Dto
         [Required]
         public Enums.MEASUREMENT_SYSTEM MeasurementSystem { get; set; }
 
-        //public IList<DeviceDto> Devices { get; set; }
+        public IList<DeviceDto> Devices { get; set; }
     }
 }

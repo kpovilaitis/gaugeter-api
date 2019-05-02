@@ -7,14 +7,14 @@ namespace Gaugeter.Api.Users.Repository
 {
     public interface IUsersRepository
     {
-        Task<User> GetUser(string id);
+        Task<User> Get(string id);
 
-        Task<IEnumerable<User>> GetAllUsers();
+        Task<IEnumerable<User>> GetAll();
 
-        Task<EntityState> CreateUser(User user);
+        Task<EntityState> Create(User user);
 
-        Task<EntityState> UpdateUser(User user);
+        Task<EntityState> Update(User user);
 
-        Task<EntityState> DeleteUser(string id);
+        Task<EntityState> Delete(string id);
     }
 }

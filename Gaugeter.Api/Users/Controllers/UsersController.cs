@@ -31,7 +31,7 @@ namespace Gaugeter.Api.Users.Controllers
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] string userId)
         {
-            var user = await _usersService.GetUser(userId);
+            var user = await _usersService.Get(userId);
 
             if (user == null)
                 return NoContent();
@@ -42,7 +42,7 @@ namespace Gaugeter.Api.Users.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var users = await _usersService.GetAllUsers();
+            var users = await _usersService.GetAll();
 
             if (users == null)
                 return NoContent();
@@ -52,9 +52,11 @@ namespace Gaugeter.Api.Users.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody][Required] User user)
+        public async Task<IActionResult> Create([FromBody][Required] UserDto userDto)
         {
-            if (await _usersService.CreateUser(user) != EntityState.Added)
+            var user = _mapper.Map<UserDto, User>(userDto);
+            
+            if (await _usersService.Create(user) != EntityState.Added)
                 return StatusCode(StatusCodes.Status500InternalServerError);
             
             var mappedUser = _mapper.Map<User, UserDto>(user);
@@ -63,9 +65,11 @@ namespace Gaugeter.Api.Users.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody][Required] User user)
+        public async Task<IActionResult> Update([FromBody][Required] UserDto userDto)
         {
-            if (await _usersService.UpdateUser(user) != EntityState.Modified) 
+            var user = _mapper.Map<UserDto, User>(userDto);
+            
+            if (await _usersService.Update(user) != EntityState.Modified) 
                 return BadRequest(ModelState);
             
             var mappedUser = _mapper.Map<User, UserDto>(user);
@@ -74,9 +78,9 @@ namespace Gaugeter.Api.Users.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Delete([FromRoute][Required] string userId)
+        public async Task<IActionResult> Delete([FromQuery][Required] string userId)
         {
-            if (await _usersService.DeleteUser(userId) == EntityState.Deleted)
+            if (await _usersService.Delete(userId) == EntityState.Deleted)
                 return Ok();
 
             return NoContent();

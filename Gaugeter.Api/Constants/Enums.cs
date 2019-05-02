@@ -7,5 +7,11 @@
             Metric,
             Imperial
         }
+        
+        public enum JOB_STATE
+        {
+            Ongoing,
+            Completed
+        }
     }
 }

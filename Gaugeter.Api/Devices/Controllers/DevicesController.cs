@@ -77,12 +77,10 @@ namespace Gaugeter.Api.Devices.Controllers
         {
             var devices = await _devicesService.GetUserDevices(_userInfoAccessor.GetUserId());
 
-            var mappedDevices = _mapper.Map<IEnumerable<Device>, IEnumerable<DeviceDto>>(devices);
-
-            if (mappedDevices == null)
+            if (devices == null)
                 return NoContent();
 
-            return Ok(mappedDevices);
+            return Ok(_mapper.Map<IEnumerable<Device>, IEnumerable<DeviceDto>>(devices));
         }
 
         [HttpDelete]

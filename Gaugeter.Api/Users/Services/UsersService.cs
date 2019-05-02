@@ -18,33 +18,33 @@ namespace Gaugeter.Api.Users.Services
             _hashGenerator = hashGenerator;
         }
 
-        public async Task<User> GetUser(string userId)
+        public async Task<User> Get(string userId)
         {
-            return await _usersRepository.GetUser(userId);
+            return await _usersRepository.Get(userId);
         }
 
-        public async Task<IEnumerable<User>> GetAllUsers()
+        public async Task<IEnumerable<User>> GetAll()
         {
-            return await _usersRepository.GetAllUsers();
+            return await _usersRepository.GetAll();
         }
 
-        public async Task<EntityState> CreateUser(User user)
-        {
-            user.Password = _hashGenerator.ComputeSha1Hash(user.Password);
-
-            return await _usersRepository.CreateUser(user);
-        }
-
-        public async Task<EntityState> UpdateUser(User user)
+        public async Task<EntityState> Create(User user)
         {
             user.Password = _hashGenerator.ComputeSha1Hash(user.Password);
 
-            return await _usersRepository.UpdateUser(user);
+            return await _usersRepository.Create(user);
         }
 
-        public async Task<EntityState> DeleteUser(string userId)
+        public async Task<EntityState> Update(User user)
+        {
+            user.Password = _hashGenerator.ComputeSha1Hash(user.Password);
+
+            return await _usersRepository.Update(user);
+        }
+
+        public async Task<EntityState> Delete(string userId)
         { 
-            return await _usersRepository.DeleteUser(userId);
+            return await _usersRepository.Delete(userId);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Gaugeter.Api.Authentication.Configuration;
 using Gaugeter.Api.Configuration;
 using Gaugeter.Api.Devices.Configuration;
+using Gaugeter.Api.Jobs.Configuration;
 using Gaugeter.Api.Users.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -24,7 +25,7 @@ namespace Gaugeter.Api
             services.AddUsersConfiguration();
             services.AddDevicesConfiguration();
             services.AddGaugeterAuthentication();
-
+            services.AddJobsConfiguration();
         }        
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

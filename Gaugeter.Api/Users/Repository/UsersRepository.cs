@@ -16,19 +16,17 @@ namespace Gaugeter.Api.Users.Repository
             _context = context;
         }
 
-        public async Task<User> GetUser(string userId)
+        public async Task<User> Get(string userId)
         {
             return await _context.User.FindAsync(userId);
         }
         
-        public async Task<IEnumerable<User>> GetAllUsers()
+        public async Task<IEnumerable<User>> GetAll()
         {
-            return await _context.User
-                //.Include(u => u.Devices)
-                .ToListAsync();
+            return await _context.User.ToListAsync();
         }
 
-        public async Task<EntityState> CreateUser(User user)
+        public async Task<EntityState> Create(User user)
         {
             try
             {
@@ -44,7 +42,7 @@ namespace Gaugeter.Api.Users.Repository
             }
         }
 
-        public async Task<EntityState> UpdateUser(User user)
+        public async Task<EntityState> Update(User user)
         {
             var userEntity = await _context.User.FindAsync(user.UserId);
 
@@ -53,25 +51,25 @@ namespace Gaugeter.Api.Users.Repository
 
             userEntity = user;
 
-            var entity = _context.Entry(userEntity);
+            var entity = _context.Entry(userEntity).State;
 
             await _context.SaveChangesAsync();
 
-            return entity.State;
+            return entity;
         }
 
-        public async Task<EntityState> DeleteUser(string userId)
+        public async Task<EntityState> Delete(string userId)
         {
             var userEntity = await _context.User.FindAsync(userId);
 
             if (userEntity == null)
                 return EntityState.Unchanged;
 
-            var state = _context.User.Remove(userEntity);
+            var state = _context.User.Remove(userEntity).State;
 
             await _context.SaveChangesAsync();
 
-            return state.State;
+            return state;
         }
     }
 }
