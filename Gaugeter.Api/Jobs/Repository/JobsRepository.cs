@@ -42,7 +42,6 @@ namespace Gaugeter.Api.Jobs.Repository
 
         public async Task<EntityState> Delete(int jobId)
         {
-            
             var jobEntity = await _context.Job
                 .Include(j => j.Telem)
                 .SingleOrDefaultAsync(j => j.Id == jobId);
@@ -91,6 +90,18 @@ namespace Gaugeter.Api.Jobs.Repository
         public async Task<Job> GetLast(string userId)
         {
             return await _context.Job
+                .Select(j => new Job
+                {
+                    Id = j.Id,
+                    State = j.State,
+                    UserId = j.UserId,
+                    Device = j.Device,
+                    Telem = _context.TelemData.Where(t => t.JobId == j.Id).OrderBy(t => t.Id).Take(1000),
+                    DateCreated = j.DateCreated,
+                    DateUpdated = j.DateUpdated
+                    
+                })
+                .Where(j => j.UserId == userId)
                 .Where(j => j.State == Enums.JOB_STATE.Completed)
                 .LastAsync(j => j.UserId == userId);
         }
