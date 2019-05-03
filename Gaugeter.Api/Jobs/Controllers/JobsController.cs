@@ -43,7 +43,7 @@ namespace Gaugeter.Api.Jobs.Controllers
             if (jobId == null)
                 return StatusCode(StatusCodes.Status422UnprocessableEntity);
             
-            return Ok(new { JobId = jobId});
+            return Ok(new { id = jobId});
         }
         
         [HttpDelete]
