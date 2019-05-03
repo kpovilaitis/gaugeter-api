@@ -68,7 +68,10 @@ namespace Gaugeter.Api.Jobs.Repository
                     State = j.State,
                     UserId = j.UserId,
                     Device = j.Device,
-                    Telem = _context.TelemData.Where(t => t.JobId == j.Id).OrderBy(t => t.Id).Take(1000),
+                    Telem = _context.TelemData
+                        .Where(t => t.JobId == j.Id)
+                        .OrderBy(t => t.Id)
+                        .Take(GaugeterConstants.MIN_JOB_TELEM_COUNT),
                     DateCreated = j.DateCreated,
                     DateUpdated = j.DateUpdated
                     
