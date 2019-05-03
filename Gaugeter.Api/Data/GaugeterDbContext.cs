@@ -39,7 +39,7 @@ namespace Gaugeter.Api.Data
                 .HasForeignKey(ud => ud.BluetoothAddress);
 
             modelBuilder.Entity<Job>()
-                .HasMany(j => j.Telem);
+                .HasMany(j => j.TelemData);
         }
     }
 }

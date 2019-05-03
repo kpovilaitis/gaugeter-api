@@ -20,7 +20,7 @@ namespace Gaugeter.Api.Jobs.Models.Data
         
         public long DateUpdated { get; set; }
         
-        public IEnumerable<TelemData> Telem { get; set; }
+        public IEnumerable<TelemData> TelemData { get; set; }
 
         public Job() { }
     }

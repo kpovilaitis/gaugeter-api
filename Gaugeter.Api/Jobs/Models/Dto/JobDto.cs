@@ -16,7 +16,7 @@ namespace Gaugeter.Api.Jobs.Models.Dto
         
         public long DateUpdated { get; set; }
         
-        public IEnumerable<TelemDataDto> Telem { get; set; }
+        public IEnumerable<TelemDataDto> TelemData { get; set; }
 
         public JobDto() { }
     }

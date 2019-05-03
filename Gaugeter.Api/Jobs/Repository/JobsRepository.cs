@@ -24,9 +24,9 @@ namespace Gaugeter.Api.Jobs.Repository
             {
                 _context.Entry(job).State = job.Id == 0 ? EntityState.Added : EntityState.Modified;
 
-                foreach (var telem in job.Telem)
+                foreach (var telem in job.TelemData)
                 {
-                    job.Telem.ToList().Add(telem);
+                    job.TelemData.ToList().Add(telem);
                     _context.Entry(telem).State = EntityState.Added;
                 }
 
@@ -43,13 +43,13 @@ namespace Gaugeter.Api.Jobs.Repository
         public async Task<EntityState> Delete(int jobId)
         {
             var jobEntity = await _context.Job
-                .Include(j => j.Telem)
+                .Include(j => j.TelemData)
                 .SingleOrDefaultAsync(j => j.Id == jobId);
 
             if (jobEntity == null)
                 return EntityState.Unchanged;
 
-            _context.TelemData.RemoveRange(jobEntity.Telem);    
+            _context.TelemData.RemoveRange(jobEntity.TelemData);    
             _context.Entry(jobEntity).State = EntityState.Deleted;
             
             var state = _context.Job.Remove(jobEntity).State;
@@ -68,7 +68,7 @@ namespace Gaugeter.Api.Jobs.Repository
                     State = j.State,
                     UserId = j.UserId,
                     Device = j.Device,
-                    Telem = _context.TelemData
+                    TelemData = _context.TelemData
                         .Where(t => t.JobId == j.Id)
                         .OrderBy(t => t.Id)
                         .Take(GaugeterConstants.MIN_JOB_TELEM_COUNT),
@@ -100,7 +100,7 @@ namespace Gaugeter.Api.Jobs.Repository
                     State = j.State,
                     UserId = j.UserId,
                     Device = j.Device,
-                    Telem = _context.TelemData.Where(t => t.JobId == j.Id).OrderBy(t => t.Id).Take(1000),
+                    TelemData = _context.TelemData.Where(t => t.JobId == j.Id).OrderBy(t => t.Id).Take(1000),
                     DateCreated = j.DateCreated,
                     DateUpdated = j.DateUpdated
                     
