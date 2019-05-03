@@ -83,6 +83,7 @@ namespace Gaugeter.Api.Jobs.Repository
         public async Task<IEnumerable<Job>> GetByDate(long start, long end, string userId)
         {
             return await _context.Job
+                .Include(j => j.Device)
                 .Where(j => j.UserId == userId)
                 .Where(j => j.DateCreated >= start)
                 .Where(j => j.DateCreated <= end)
