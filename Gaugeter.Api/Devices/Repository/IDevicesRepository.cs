@@ -12,6 +12,8 @@ namespace Gaugeter.Api.Devices.Repository
         Task<EntityState> AddDeviceToUser(string userId, Device device);
 
         Task<Device> Get(string bluetoothAddress);
+        
+        Task<EntityState> Update(Device device);
 
         Task<IEnumerable<Device>> GetUserDevices(string userId);
 

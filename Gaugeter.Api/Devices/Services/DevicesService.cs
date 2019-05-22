@@ -30,6 +30,11 @@ namespace Gaugeter.Api.Services.Devices
             return await _devicesRepository.Get(bluetoothAddress);
         }
 
+        public async Task<EntityState> Update(Device device)
+        {
+            return await _devicesRepository.Update(device);
+        }
+
         public async Task<IEnumerable<Device>> GetUserDevices(string userId)
         {
             return await _devicesRepository.GetUserDevices(userId);

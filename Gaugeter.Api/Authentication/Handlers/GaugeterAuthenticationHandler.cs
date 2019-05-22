@@ -35,16 +35,18 @@ namespace Gaugeter.Api.Authentication.Handlers
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             var bearer = Request.Headers.SingleOrDefault(header => header.Key == "Authorization");
-
             var bearerToken = bearer.Value;
+            
             if (string.IsNullOrEmpty(bearerToken))
                 return AuthenticateResult.Fail("Unauthorized");
 
             var token = await _tokenService.GetToken(bearerToken);
+            
             if (token == null)
                 return AuthenticateResult.Fail("Token not found");
 
             var tokenValidForHours = (token.ExpirationDate - DateTime.Now).TotalHours;
+            
             if (tokenValidForHours < 0)
             {
                 await _tokenService.RemoveToken(token.Token);

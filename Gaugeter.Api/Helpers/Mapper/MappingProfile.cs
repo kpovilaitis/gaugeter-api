@@ -26,7 +26,7 @@ namespace Gaugeter.Api.Helpers.Mapper
             CreateMap<DeviceDto, Device>(MemberList.Source);
             
             CreateMap<JobDto, Job>(MemberList.Source);
-            CreateMap<TelemDataDto, Jobs.Models.Data.TelemData>(MemberList.Source);
+            CreateMap<TelemDataDto, TelemData>(MemberList.Source);
         }
     }
 }

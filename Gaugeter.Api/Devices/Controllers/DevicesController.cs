@@ -71,6 +71,19 @@ namespace Gaugeter.Api.Devices.Controllers
 
             return Ok(device);
         }
+        
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody][Required] DeviceDto deviceDto)
+        {
+            var device = _mapper.Map<DeviceDto, Device>(deviceDto);
+            
+            if (await _devicesService.Update(device) != EntityState.Modified) 
+                return BadRequest(ModelState);
+            
+            var mappedDevice = _mapper.Map<Device, DeviceDto>(device);
+            
+            return CreatedAtAction(nameof(Get), new { id = device.Name }, mappedDevice);
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetUserDevices()

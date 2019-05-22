@@ -51,6 +51,22 @@ namespace Gaugeter.Api.Devices.Repository
             return await _context.Device.FindAsync(bluetoothAddress);
         }
 
+        public async Task<EntityState> Update(Device device)
+        {
+            var deviceEntity = await _context.Device.FindAsync(device.BluetoothAddress);
+
+            if (deviceEntity == null)
+                return EntityState.Unchanged;
+
+            deviceEntity.Name = device.Name;
+            
+            _context.Entry(deviceEntity).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+
+            return EntityState.Modified;
+        }
+
         public async Task<IEnumerable<Device>> GetUserDevices(string userId)
         {
             return await _context.UserDevice

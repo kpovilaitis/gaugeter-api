@@ -1,7 +1,9 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gaugeter.Api", "Gaugeter.Api\Gaugeter.Api.csproj", "{7DF8A42E-E7E6-4A79-9914-D023CA060F0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gaugeter.Api.Tests", "Gaugeter.Api.Tests\Gaugeter.Api.Tests.csproj", "{8831F48F-B86E-4849-AC59-4DE4EC2CAD73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,5 +15,9 @@ Global
 		{7DF8A42E-E7E6-4A79-9914-D023CA060F0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DF8A42E-E7E6-4A79-9914-D023CA060F0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DF8A42E-E7E6-4A79-9914-D023CA060F0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8831F48F-B86E-4849-AC59-4DE4EC2CAD73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8831F48F-B86E-4849-AC59-4DE4EC2CAD73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8831F48F-B86E-4849-AC59-4DE4EC2CAD73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8831F48F-B86E-4849-AC59-4DE4EC2CAD73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -49,13 +49,15 @@ namespace Gaugeter.Api.Users.Repository
             if (userEntity == null)
                 return EntityState.Unchanged;
 
-            userEntity = user;
-
-            var entity = _context.Entry(userEntity).State;
+            userEntity.Password = user.Password;
+            userEntity.Description = user.Description;
+            userEntity.MeasurementSystem = user.MeasurementSystem;
+            
+            _context.Entry(userEntity).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
 
-            return entity;
+            return EntityState.Modified;
         }
 
         public async Task<EntityState> Delete(string userId)
