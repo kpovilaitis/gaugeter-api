@@ -21,16 +21,15 @@ namespace Gaugeter.Api.Jobs.Repository
         public async Task<int?> Upsert(Job job)
         {
             try
-            {
-                _context.Entry(job).State = job.Id == 0 ? EntityState.Added : EntityState.Modified;
-
-                var telemDataList = job.TelemData.ToList();
+            {               
+                await _context.TelemData.AddRangeAsync(job.TelemData.ToList());
+    
+                if (job.Id == 0)
+                    await _context.Job.AddAsync(job);
+                else
+                    _context.Job.Update(job);
                 
-                foreach (var telem in telemDataList)
-                {
-                    telemDataList.Add(telem);
-                    _context.TelemData.Add(telem).State = EntityState.Added;
-                }
+                _context.Entry(job.Device).State = EntityState.Unchanged;
 
                 await _context.SaveChangesAsync();
 
