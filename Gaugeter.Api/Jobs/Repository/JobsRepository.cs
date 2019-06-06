@@ -24,10 +24,12 @@ namespace Gaugeter.Api.Jobs.Repository
             {
                 _context.Entry(job).State = job.Id == 0 ? EntityState.Added : EntityState.Modified;
 
-                foreach (var telem in job.TelemData)
+                var telemDataList = job.TelemData.ToList();
+                
+                foreach (var telem in telemDataList)
                 {
-                    job.TelemData.ToList().Add(telem);
-                    _context.Entry(telem).State = EntityState.Added;
+                    telemDataList.Add(telem);
+                    _context.TelemData.Add(telem).State = EntityState.Added;
                 }
 
                 await _context.SaveChangesAsync();
@@ -88,6 +90,7 @@ namespace Gaugeter.Api.Jobs.Repository
                 .Where(j => j.DateCreated >= start)
                 .Where(j => j.DateCreated <= end)
                 .Where(j => j.State == Enums.JOB_STATE.Completed)
+                .OrderByDescending(j => j.DateCreated)
                 .ToListAsync();
         }
 
