@@ -16,5 +16,7 @@ namespace Gaugeter.Api.Jobs.Models.Data
         public float WaterTemperature { get; set; }
         
         public float Charge { get; set; }
+        
+        public long DateCreated { get; set; }
     }
 }

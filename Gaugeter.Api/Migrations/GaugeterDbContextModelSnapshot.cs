@@ -81,7 +81,9 @@ namespace Gaugeter.Api.Migrations
 
                     b.Property<float>("Charge");
 
-                    b.Property<int?>("JobId");
+                    b.Property<long>("DateCreated");
+
+                    b.Property<int>("JobId");
 
                     b.Property<float>("OilPressure");
 
@@ -137,8 +139,9 @@ namespace Gaugeter.Api.Migrations
             modelBuilder.Entity("Gaugeter.Api.Jobs.Models.Data.TelemData", b =>
                 {
                     b.HasOne("Gaugeter.Api.Jobs.Models.Data.Job")
-                        .WithMany("Telem")
-                        .HasForeignKey("JobId");
+                        .WithMany("TelemData")
+                        .HasForeignKey("JobId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Gaugeter.Api.Users.Models.Data.UserDevice", b =>

@@ -9,5 +9,7 @@ namespace Gaugeter.Api.Jobs.Models.Dto
         public float WaterTemperature { get; set; }
         
         public float Charge { get; set; }
+        
+        public long DateCreated { get; set; }
     }
 }

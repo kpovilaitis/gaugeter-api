@@ -21,8 +21,9 @@ namespace Gaugeter.Api.Jobs.Repository
         public async Task<int?> Upsert(Job job)
         {
             try
-            {               
-                await _context.TelemData.AddRangeAsync(job.TelemData.ToList());
+            {
+                foreach (var telemData in job.TelemData.ToList())
+                    await _context.TelemData.AddAsync(telemData);
     
                 if (job.Id == 0)
                     await _context.Job.AddAsync(job);
@@ -71,7 +72,7 @@ namespace Gaugeter.Api.Jobs.Repository
                     Device = j.Device,
                     TelemData = _context.TelemData
                         .Where(t => t.JobId == j.Id)
-                        .OrderBy(t => t.Id)
+                        .OrderBy(t => t.DateCreated)
                         .Take(GaugeterConstants.MIN_JOB_TELEM_COUNT),
                     DateCreated = j.DateCreated,
                     DateUpdated = j.DateUpdated
